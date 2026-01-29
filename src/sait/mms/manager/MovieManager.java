@@ -66,19 +66,85 @@ public class MovieManager {
 	}
 	
 	public static void addMovie() {
-		
+		try {
+            System.out.print("Enter duration: ");
+            int duration = Integer.parseInt(sc.nextLine());
+            if (duration <= 0) throw new Exception("Duration must be > 0");
+
+            System.out.print("Enter movie title: ");
+            String title = sc.nextLine();
+            if (title.isEmpty()) throw new Exception("Title cannot be empty");
+
+            System.out.print("Enter year: ");
+            int year = Integer.parseInt(sc.nextLine());
+            if (year <= 0) throw new Exception("Year must be > 0");
+
+            Movie newMovie = new Movie(duration, title, year);
+            movies.add(newMovie);
+            System.out.println("Added movie: " + newMovie);
+        } catch (Exception e) {
+            System.out.println("Invalid input! " + e.getMessage());
+        }
 	}
 	
 	public static void generateMovieListInYear() {
-		
+		try {
+            System.out.print("Enter in year: ");
+            int year = Integer.parseInt(sc.nextLine());
+            int totalDuration = 0;
+
+            System.out.println("\nMovie List");
+            System.out.println("Duration\tYear\tTitle");
+            for (Movie m : movies) {
+                if (m.getYear() == year) {
+                    System.out.println(m);
+                    totalDuration += m.getDuration();
+                }
+            }
+            System.out.println("Total duration: " + totalDuration + " minutes");
+        } catch (Exception e) {
+            System.out.println("Invalid year!");
+        }
 	}
 	
 	public static void generateRandomMovieList() {
-		
+		try {
+            System.out.print("Enter number of movies: ");
+            int n = Integer.parseInt(sc.nextLine());
+            if (n <= 0 || n > movies.size()) {
+                System.out.println("Invalid number!");
+                return;
+            }
+
+            List<Movie> shuffled = new ArrayList<>(movies);
+            Collections.shuffle(shuffled);
+
+            int totalDuration = 0;
+            System.out.println("\nMovie List");
+            System.out.println("Duration\tYear\tTitle");
+            for (int i = 0; i < n; i++) {
+                Movie m = shuffled.get(i);
+                System.out.println(m);
+                totalDuration += m.getDuration();
+            }
+            System.out.println("Total duration: " + totalDuration + " minutes");
+        } catch (Exception e) {
+            System.out.println("Invalid input!");
+        }
 	}
 	
 	public static void saveMovieListToFile() {
-		
+		try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("res/movies.txt"));
+            for (Movie m : movies) {
+                bw.write(m.getDuration() + "," + m.getTitle() + "," + m.getYear());
+                bw.newLine();
+            }
+            bw.close();
+            System.out.println("Movies saved to file.");
+        } catch (IOException e) {
+            System.out.println("Error writing movies.txt: " + e.getMessage());
+        }
 	}
 
 }
